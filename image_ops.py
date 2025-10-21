@@ -10,20 +10,27 @@ def make_gray(width, height, value=128):
     return image
 
 
+def clamp_pixel(value):
+    """Обмежує значення пікселя в межах 0-255."""
+    return max(0, min(255, value))
+
+
 def adjust_brightness(image, delta=10):
     """Зміщує яскравість кожного пікселя та обмежує її в діапазоні 0-255."""
     output = []
     for row in image:
         new_row = []
         for pixel in row:
-            value = max(0, min(255, pixel + delta))
-            new_row.append(value)
+            new_row.append(clamp_pixel(pixel + delta))
         output.append(new_row)
     return output
 
 
 def box_blur(image):
     """Виконує розмиття шляхом усереднення сусідів у вікні 3×3."""
+    if not image or not image[0]:
+        raise ValueError("Зображення не може бути порожнім для розмиття")
+
     height = len(image)
     width = len(image[0])
     output = []
