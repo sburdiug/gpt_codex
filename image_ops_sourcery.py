@@ -60,3 +60,15 @@ def blur_image(image: list[list[int]]) -> list[list[int]]:
             blurred_row.append(sum(neighbors) // len(neighbors))
         blurred_image.append(blurred_row)
     return blurred_image
+
+if __name__ == "__main__":
+
+    # Arrange
+    image = create_gray_image(10, 5, 100)
+
+    # Act
+    brighter_image = change_brightness(image, 30)
+    blurred_image = blur_image(brighter_image)
+
+    # Assert
+    print(blurred_image[0][0])
