@@ -1,78 +1,62 @@
+def create_gray_image(width: int, height: int, value: int = 128) -> list[list[int]]:
+    """Створює зображення у відтінках сірого як двовимірний список з однаковими значеннями пікселів.
 
-def make_gray(width, height, val=128):
-    """Creates a grayscale image as a 2D list with all pixels set to a given value.
-
-    This function generates a width x height image where each pixel has the same grayscale value.
-
-    Args:
-        width (int): The width of the image.
-        height (int): The height of the image.
-        val (int, optional): The grayscale value for all pixels. Defaults to 128.
-
-    Returns:
-        list[list[int]]: A 2D list representing the grayscale image.
-    """
-    img = []
-    for _ in range(height):
-        row = [val for _ in range(width)]
-        img.append(row)
-    return img
-
-def adjust_brightness(img, delta=10):
-    """Adjusts the brightness of a grayscale image by a specified amount.
-
-    This function increases or decreases the brightness of each pixel in the image, clamping values between 0 and 255.
+    Функція повертає зображення заданої ширини та висоти, де кожен піксель має однакове значення яскравості.
 
     Args:
-        img (list[list[int]]): The input grayscale image as a 2D list.
-        delta (int, optional): The amount to adjust brightness by. Defaults to 10.
+        width (int): Кількість стовпців у зображенні.
+        height (int): Кількість рядків у зображенні.
+        value (int, optional): Значення яскравості для всіх пікселів. За замовчуванням 128.
 
     Returns:
-        list[list[int]]: A new 2D list representing the brightness-adjusted image.
+        list[list[int]]: Згенероване зображення у відтінках сірого.
     """
-    out = []
-    for y in range(len(img)):
-        row = []
-        for x in range(len(img[0])):
-            v = img[y][x] + delta
-            v = max(0, min(255, v))
-            row.append(v)
-        out.append(row)
-    return out
+    return [[value for _ in range(width)] for _ in range(height)]
 
-def box_blur(img):
-    """Applies a box blur filter to a grayscale image.
 
-    This function returns a new image where each pixel is the average of its neighbors in a 3x3 box.
+def change_brightness(image: list[list[int]], delta: int = 10) -> list[list[int]]:
+    """Повертає нове зображення з відкоригованою яскравістю на задану величину.
+
+    Кожен піксель зображення збільшується або зменшується на delta, результат обмежується в межах від 0 до 255.
 
     Args:
-        img (list[list[int]]): The input grayscale image as a 2D list.
+        image (list[list[int]]): Вхідне зображення у відтінках сірого.
+        delta (int, optional): Величина зміни яскравості. За замовчуванням 10.
 
     Returns:
-        list[list[int]]: A new 2D list representing the blurred image.
+        list[list[int]]: Зображення з відкоригованою яскравістю.
     """
-    h = len(img)
-    w = len(img[0])
-    out = []
-    for y in range(h):
-        row = []
-        for x in range(w):
-            s = 0
-            c = 0
-            for dy in (-1, 0, 1):
-                for dx in (-1, 0, 1):
-                    ny = y + dy
-                    nx = x + dx
-                    if 0 <= ny < h and 0 <= nx < w:
-                        s += img[ny][nx]
-                        c += 1
-            row.append(s // c)
-        out.append(row)
-    return out
+    return [
+        [max(0, min(255, pixel + delta)) for pixel in row]
+        for row in image
+    ]
 
-if __name__ == "__main__":
-    im = make_gray(10, 5, 100)
-    im = adjust_brightness(im, 30)
-    im = box_blur(im)
-    print(im[0][0])
 
+def blur_image(image: list[list[int]]) -> list[list[int]]:
+    """Застосовує простий box blur до зображення у відтінках сірого.
+
+    Кожен піксель у результаті є середнім значенням своїх сусідів у 3x3 області навколо нього.
+
+    Args:
+        image (list[list[int]]): Вхідне зображення у відтінках сірого.
+
+    Returns:
+        list[list[int]]: Розмите зображення.
+    """
+    if not image or not image[0]:
+        return []
+
+    height = len(image)
+    width = len(image[0])
+    blurred_image: list[list[int]] = []
+    for y in range(height):
+        blurred_row: list[int] = []
+        for x in range(width):
+            neighbors = [
+                image[ny][nx]
+                for ny in range(max(0, y - 1), min(height, y + 2))
+                for nx in range(max(0, x - 1), min(width, x + 2))
+            ]
+            blurred_row.append(sum(neighbors) // len(neighbors))
+        blurred_image.append(blurred_row)
+    return blurred_image
