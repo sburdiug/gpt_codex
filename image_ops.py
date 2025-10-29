@@ -1,4 +1,3 @@
-
 def makeGray(W,H,VAL=128):
     IMG = []
     for Y in range(H):
