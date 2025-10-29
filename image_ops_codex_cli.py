@@ -1,11 +1,12 @@
 """Прості утиліти для роботи з градаціями сірого в Codex CLI."""
 
-from typing import List, Sequence
+from collections.abc import Sequence
 
 Pixel = int
-Image = List[List[Pixel]]
+Image = list[list[Pixel]]
 
 __all__ = ("make_gray", "adjust_brightness", "blur", "Brighten", "BLUR")
+
 
 _MIN_PIXEL = 0
 _MAX_PIXEL = 255
