@@ -1,27 +1,27 @@
-"""Utility functions for simple grayscale image manipulation."""
+"""Утилітарні функції для простої обробки зображень у відтінках сірого."""
 
 
 def _clamp(value: int, *, min_value: int = 0, max_value: int = 255) -> int:
-    """Return ``value`` limited to the inclusive ``min_value`` … ``max_value`` range."""
+    """Повертає ``value``, обмежене включним діапазоном від ``min_value`` до ``max_value``."""
 
     return max(min_value, min(value, max_value))
 
 
 def make_gray(width: int, height: int, value: int = 128) -> list[list[int]]:
-    """Create a ``height`` × ``width`` image filled with the specified grayscale ``value``."""
+    """Створює зображення ``height`` × ``width``, заповнене вказаним сірим значенням ``value``."""
 
     clamped_value = _clamp(value)
     return [[clamped_value for _ in range(width)] for _ in range(height)]
 
 
 def adjust_brightness(image: list[list[int]], delta_value: int = 10) -> list[list[int]]:
-    """Return ``image`` with every pixel adjusted by ``delta_value`` and clamped to 0–255."""
+    """Повертає ``image`` із кожним пікселем, зміненим на ``delta_value`` та обрізаним до діапазону 0–255."""
 
     return [[_clamp(pixel + delta_value) for pixel in row] for row in image]
 
 
 def box_blur(image: list[list[int]]) -> list[list[int]]:
-    """Return a blurred copy of ``image`` computed with a 3×3 neighborhood average."""
+    """Повертає розмиту копію ``image``, обчислену як середнє значення в околі 3×3."""
 
     if not image or not image[0]:
         return []
